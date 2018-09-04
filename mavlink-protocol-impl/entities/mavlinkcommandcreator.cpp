@@ -105,7 +105,9 @@ QVector<MavLinkCommandSharedPtr> MavLinkCommandCreator::getMountConfigureMission
 MavLinkCommandSharedPtr MavLinkCommandCreator::getNavWaypointMissionItemCommand(const float latitude, const float longitude, const float altitude, const float delay, const uint16_t seq)
 {
     auto result = MavLinkCommandSharedPtr::create();
+#if 0
     mavlink_msg_mission_item_int_pack(
+
                 mSystemId, mComponentId,
                 &result->msg,
                 mTargetSystemId, mTargetComponentId,
@@ -117,7 +119,20 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getNavWaypointMissionItemCommand(
                 static_cast<int32_t>(longitude * 10000000),
                 altitude,
                 MAV_MISSION_TYPE_MISSION);
+#endif
+    mavlink_msg_mission_item_pack(
 
+                mSystemId, mComponentId,
+                &result->msg,
+                mTargetSystemId, mTargetComponentId,
+                seq, 3,
+                MAV_CMD_NAV_WAYPOINT,
+                seq == 0 ? 1 : 0,
+                true, delay, 0, 0, 0,
+                latitude,
+                longitude,
+                altitude,
+                MAV_MISSION_TYPE_MISSION);
     return result;
 
 }

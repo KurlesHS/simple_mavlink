@@ -50,6 +50,7 @@ private:
     MavLinkCommandCreator mCommandCreator;
     uint8_t mCurrentRetry;
     MavLinkCommandSharedPtr mCurrentMavlinkCmd;
+
 };
 
 }
@@ -100,7 +101,7 @@ bool UploadMissionOutgoingCommandHandlerPrivate::incommingMavlinkCommand(const M
     bool result = false;
     if (command->msg.msgid == MAVLINK_MSG_ID_MISSION_ACK) {
         result = handleMissionAckCmd(command);
-    } else if (command->msg.msgid == MAVLINK_MSG_ID_MISSION_REQUEST_INT) {
+    } else if (command->msg.msgid == MAVLINK_MSG_ID_MISSION_REQUEST) {
         result = handleMissionRequestCmd(command);
     }
     return result;
@@ -108,9 +109,10 @@ bool UploadMissionOutgoingCommandHandlerPrivate::incommingMavlinkCommand(const M
 
 bool UploadMissionOutgoingCommandHandlerPrivate::handleMissionRequestCmd(const MavLinkCommandSharedPtr &command)
 {
-
-    mavlink_mission_request_int_t resp;
-    mavlink_msg_mission_request_int_decode(&command->msg, &resp);
+    // mavlink_mission_request_int_t resp;
+    mavlink_mission_request_t resp;
+    // mavlink_msg_mission_request_int_decode(&command->msg, &resp);
+    mavlink_msg_mission_request_decode(&command->msg, &resp);
     if (resp.seq < mCurrentCommand->missionItems().size()) {
         auto item = mCurrentCommand->missionItems().at(resp.seq);
         if (item) {
