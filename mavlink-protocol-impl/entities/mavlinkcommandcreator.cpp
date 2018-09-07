@@ -24,7 +24,7 @@ quint16 gradToInt(float grad) {
 }
 }
 
-MavLinkCommandCreator::MavLinkCommandCreator() :    
+MavLinkCommandCreator::MavLinkCommandCreator() :
     mSystemId(0),
     mComponentId(0),
     mTargetSystemId(0),
@@ -152,6 +152,7 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getNavReturnToLaunchCommand(const
                     0, 0, 0,
                     MAV_MISSION_TYPE_MISSION);
     } else {
+#if 0
         mavlink_msg_command_int_pack(
                     mSystemId, mComponentId,
                     &result->msg,
@@ -161,7 +162,26 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getNavReturnToLaunchCommand(const
                     1,
                     true, 0, 0, 0, 0,
                     0, 0, 0);
+#endif
+        mavlink_msg_command_long_pack(mSystemId, mComponentId,
+                                      &result->msg,
+                                      mTargetSystemId, mTargetComponentId,
+                                      MAV_CMD_NAV_RETURN_TO_LAUNCH,
+                                      true, 0, 0, 0, 0,
+                                      0, 0, 0);
+
     }
+    return result;
+}
+
+MavLinkCommandSharedPtr MavLinkCommandCreator::getMissionStartCommand(int from, int to)
+{
+    auto result = MavLinkCommandSharedPtr::create();
+    mavlink_command_long_t cmd;
+    cmd.param1 = from;
+    cmd.param2 = to;
+    cmd.command = MAV_CMD_MISSION_START;
+    mavlink_msg_command_long_encode(mSystemId, mComponentId, &result->msg, &cmd);
     return result;
 }
 
@@ -172,20 +192,11 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getMissionCountCommand(const quin
                 mSystemId, mComponentId,
                 &result->msg,
                 mTargetSystemId, mTargetComponentId,
-                count, MAV_MISSION_TYPE_MISSION);    
+                count, MAV_MISSION_TYPE_MISSION);
     return result;
 }
 
-MavLinkCommandSharedPtr MavLinkCommandCreator::getMissionStartCommand(int from, int to)
-{
-    auto result = MavLinkCommandSharedPtr::create();        
-    mavlink_command_int_t cmd;
-    cmd.param1 = from;
-    cmd.param2 = to;
-    cmd.command = MAV_CMD_MISSION_START;
-    mavlink_msg_command_int_encode(mSystemId, mComponentId, &result->msg, &cmd);
-    return result;
-}
+
 
 MavLinkCommandSharedPtr MavLinkCommandCreator::getMissionSetCurrentCommand(int current)
 {
@@ -195,7 +206,7 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getMissionSetCurrentCommand(int c
                 mSystemId, mComponentId,
                 &result->msg,
                 mTargetSystemId, mTargetComponentId,
-                static_cast<uint16_t>(current));    
+                static_cast<uint16_t>(current));
     return result;
 }
 
@@ -206,7 +217,7 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getSetModeCommand(int current)
                 mSystemId, mComponentId,
                 &result->msg,
                 mTargetSystemId, 217,
-                static_cast<uint16_t>(current));    
+                static_cast<uint16_t>(current));
     return result;
 }
 
