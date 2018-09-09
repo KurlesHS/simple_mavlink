@@ -17,8 +17,8 @@ TestMavlinkAppMainWindow::TestMavlinkAppMainWindow(QWidget *parent) :
     mTransport("127.0.0.1", 5762),
     mClient(&mTransport),
     mCommandHandler(&mClient, 255, 0),
-    mPitch(180),
-    mCourse(180)
+    mPitch(0),
+    mCourse(0)
 {
     ui->setupUi(this);
     connect(&mCommandHandler, &MavlinkCommandHandler::logMessage,

@@ -52,6 +52,16 @@ MavLinkCommandSharedPtr MavLinkCommandCreator::getRcChanneslOverrideCommand(cons
     return result;
 }
 
+MavLinkCommandSharedPtr MavLinkCommandCreator::getDoMountControlCommand(const float pitch, const float course)
+{
+    auto result = MavLinkCommandSharedPtr::create();
+    mavlink_msg_command_long_pack(mSystemId, mComponentId, &result->msg, mTargetSystemId, mTargetComponentId,
+                                  MAV_CMD_DO_MOUNT_CONTROL, 1, pitch, 0, course, 0, 0, 0, MAV_MOUNT_MODE_MAVLINK_TARGETING);
+
+
+    return result;
+}
+
 void MavLinkCommandCreator::setCommonParams(const uint8_t system, const uint8_t componet, const uint8_t targetSystem, const uint8_t targetComponent)
 {
     mSystemId = system;

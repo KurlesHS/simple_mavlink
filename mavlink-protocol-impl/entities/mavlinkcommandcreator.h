@@ -35,6 +35,7 @@ public:
     MavLinkCommandSharedPtr getSetModeCommand(int current);
     MavLinkCommandSharedPtr getRequestProtocolCommand();    
     MavLinkCommandSharedPtr getRcChanneslOverrideCommand(const float pitch, const float course);
+    MavLinkCommandSharedPtr getDoMountControlCommand(const float pitch, const float course);
 
 private:
     uint8_t mSystemId;

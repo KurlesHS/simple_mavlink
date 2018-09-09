@@ -27,11 +27,18 @@ StartMissionOutgoingCommandHandler::StartMissionOutgoingCommandHandler(QObject *
 IOutgoingCommand::Command rsvo::mavlinkprotocol::StartMissionOutgoingCommandHandler::commandType() const
 {
     return IOutgoingCommand::Command::StartMission;
-
 }
 
 bool rsvo::mavlinkprotocol::StartMissionOutgoingCommandHandler::processCommand(IOutgoingCommandSharedPtr command, const uint8_t systemId, const uint8_t componentId, const uint8_t targetSystemId, const uint8_t targetComponentId, MavLinkClient *mavlinkClient)
 {
+    if (mCurrentCmd) {
+        if (command) {
+            QTimer::singleShot(10, command.data(), [command]() {
+               command->makeFinished(false);
+            });
+        }
+        return false;
+    }
     if (!mavlinkClient || !mavlinkClient->transport() || !mavlinkClient->transport()->isOpen()) {
         // нет транспорта
         logMessage(tr("Получили команду запуска маршрутного задания: проблемы с транспортом, отмена"));

@@ -33,6 +33,14 @@ IOutgoingCommand::Command ReturnToHomeOutgoingCommandHandler::commandType() cons
 
 bool ReturnToHomeOutgoingCommandHandler::processCommand(IOutgoingCommandSharedPtr command, const uint8_t systemId, const uint8_t componentId, const uint8_t targetSystemId, const uint8_t targetComponentId, MavLinkClient *mavlinkClient)
 {
+    if (mCurrentCmd) {
+        if (command) {
+            QTimer::singleShot(10, command.data(), [command]() {
+               command->makeFinished(false);
+            });
+        }
+        return false;
+    }
     if (!mavlinkClient || !mavlinkClient->transport() || !mavlinkClient->transport()->isOpen()) {
         // нет транспорта
         logMessage(tr("Получили команду возвращения на базу: проблемы с транспортом, отмена"));
