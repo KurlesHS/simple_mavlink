@@ -113,6 +113,9 @@ bool UploadMissionOutgoingCommandHandlerPrivate::handleMissionRequestCmd(const M
     mavlink_mission_request_t resp;
     // mavlink_msg_mission_request_int_decode(&command->msg, &resp);
     mavlink_msg_mission_request_decode(&command->msg, &resp);
+    if (!mCurrentCommand) {
+        return false;
+    }
     if (resp.seq < mCurrentCommand->missionItems().size()) {
         auto item = mCurrentCommand->missionItems().at(resp.seq);
         if (item) {

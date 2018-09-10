@@ -59,7 +59,6 @@ bool rsvo::mavlinkprotocol::StartMissionOutgoingCommandHandler::processCommand(I
     mCurrentCmd = command;
     mCommandTimeoutTimer.start();
 
-
     logMessage(tr("Посылаем команду запуска маршрутного задания (item от %0 до %1)")
                .arg(startMissionCommand->from())
                .arg(startMissionCommand->to()));

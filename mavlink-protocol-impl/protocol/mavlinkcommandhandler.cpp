@@ -282,7 +282,7 @@ void MavlinkCommandHandlerPrivate::onMavLinkCommandReceived(const MavLinkCommand
     if (!mCurrentLinkStatus) {
         mCurrentLinkStatus = true;
         emit q->linkStatus(true);
-    }
+    }    
     for (const auto &handerInfo : mUavEventHandlers) {
         if (handerInfo.first == command->msg.msgid) {
             IUavEventSharedPtr resut = handerInfo.second(command);
