@@ -6,6 +6,13 @@
 #include <protocol/commands/startmissionoutgoingcommand.h>
 #include <protocol/commands/uploadmissionoutgoingcommand.h>
 
+
+#include <protocol/uavevents/altitudeuavevent.h>
+#include <protocol/uavevents/batterystateuavevent.h>
+#include <protocol/uavevents/globalpositionuavevent.h>
+#include <protocol/uavevents/landedstateuavevent.h>
+#include <protocol/uavevents/missionitemreacheduavevent.h>
+
 #include <QDateTime>
 
 using namespace rsvo::mavlinkprotocol;
@@ -69,6 +76,57 @@ void TestMavlinkAppMainWindow::onUavEvent(const QString &uavId, const IUavEventS
     ui->textEdit->append(tr("Принято событие %0 от БЛА %1")
                          .arg(static_cast<int>(uavEvent->type()))
                          .arg(uavId));
+
+    switch (uavEvent->type()) {
+    case IUavEvent::Type::Altitude: {
+        auto *ev = dynamic_cast<AltitudeUavEvent*>(uavEvent.data());
+        if (ev) {
+            ui->textEdit->append(tr(R"(Принято событие ALTITUDE: Amsl: %0, Local: %1, Rel: %2, Terrain: %3)")
+                                 .arg(static_cast<double>(ev->altitudeAmsl))
+                                 .arg(static_cast<double>(ev->altitudeLocal))
+                                 .arg(static_cast<double>(ev->altitudeRelative))
+                                 .arg(static_cast<double>(ev->altitudeTerrain)));
+        }
+    }
+        break;
+    case IUavEvent::Type::BatteryState: {
+        auto *ev = dynamic_cast<BatteryStateUavEvent*>(uavEvent.data());
+        if (ev) {
+            ui->textEdit->append(tr(R"(Принято событие BatteryState: temperature: %0, remaining: %1)")
+                                 .arg(ev->temperature)
+                                 .arg(ev->batteryRemaining));
+        }
+
+    }
+        break;
+    case IUavEvent::Type::GlobalPosition: {
+        auto *ev = dynamic_cast<GlobalPositionUavEvent*>(uavEvent.data());
+        if (ev) {
+            ui->textEdit->append(tr(R"(Принято событие GlobalPosition: lat: %0, lon: %1, alt: %2, rel_alt: %3)")
+                                 .arg(static_cast<double>(ev->lat))
+                                 .arg(static_cast<double>(ev->lon))
+                                 .arg(static_cast<double>(ev->alt))
+                                 .arg(static_cast<double>(ev->relative_alt)));
+        }
+    }
+        break;
+    case IUavEvent::Type::LandedState: {
+        auto *ev = dynamic_cast<LandedStateUavEvent*>(uavEvent.data());
+        if (ev) {
+            ui->textEdit->append(tr(R"(Принято событие LandedState, state: %0)")
+                                 .arg(static_cast<int>(ev->state)));
+        }
+    }
+        break;
+    case IUavEvent::Type::MissionItemReached: {
+        auto *ev = dynamic_cast<MissionItemReachedUavEvent*>(uavEvent.data());
+        if (ev) {
+            ui->textEdit->append(tr(R"(Принято событие MissionItemReached, seq: %0)")
+                                 .arg(static_cast<int>(ev->seq)));
+        }
+    }
+        break;
+    }
 }
 
 void TestMavlinkAppMainWindow::updatePitchCourseLabel()
