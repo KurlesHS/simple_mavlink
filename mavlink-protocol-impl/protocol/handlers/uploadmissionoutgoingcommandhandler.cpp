@@ -156,7 +156,7 @@ void UploadMissionOutgoingCommandHandlerPrivate::logMessage(const QString &messa
 }
 
 void UploadMissionOutgoingCommandHandlerPrivate::startUpload()
-{
+{    
     mCurrentRetry = maxRetries;
     mCommandCreator.clearMissionSeq();
     int totalMissionItemCount = mCurrentCommand->missionItems().size();
