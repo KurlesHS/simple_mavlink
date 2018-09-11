@@ -53,7 +53,7 @@ private:
     rsvo::mavlinkprotocol::MavLinkClient mClient;
     rsvo::mavlinkprotocol::MavlinkCommandHandler mCommandHandler;
     int mPitch;
-    int mCourse;
+    int mCourse;;
 };
 
 #endif // TESTMAVLINKAPPMAINWINDOW_H

@@ -73,6 +73,7 @@ void TestMavlinkAppMainWindow::onLog(const QString &msg)
 
 void TestMavlinkAppMainWindow::onUavEvent(const QString &uavId, const IUavEventSharedPtr &uavEvent)
 {
+
     ui->textEdit->append(tr("Принято событие %0 от БЛА %1")
                          .arg(static_cast<int>(uavEvent->type()))
                          .arg(uavId));
@@ -154,13 +155,18 @@ void TestMavlinkAppMainWindow::sendPitchCourseCmd()
     correctPitchCourse();
     updatePitchCourseLabel();
     auto cmd = new MountControlOutgoingCommand(mPitch, mCourse);
+    int p = mPitch;
+    int c = mCourse;
     connect(cmd, &MountControlOutgoingCommand::finished,
-            this, [this](bool result) {
+            this, [this, p, c](bool result) {
         qDebug() << "result mount control" << result;
         this->onLog(tr("Result mount control: %0").arg(result));
+        if (result && (p != mPitch || c != mCourse)) {
+            this->sendPitchCourseCmd();
+        }
     });
-    mCommandHandler.addCommand("1", IOutgoingCommandSharedPtr(cmd));
 
+    mCommandHandler.addCommand("1", IOutgoingCommandSharedPtr(cmd));
 }
 
 void TestMavlinkAppMainWindow::on_pushButtonStartMission_clicked()

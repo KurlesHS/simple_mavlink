@@ -31,6 +31,10 @@ private:
     uint8_t mCurrentRetry;
     IOutgoingCommandSharedPtr mCurrentCmd;
     QPointer<MavLinkClient> mClient;
+    float mLastPitch;
+    float mLastCourse;
+    float mCurrentPitch;
+    float mCurrentCourse;
 };
 
 }

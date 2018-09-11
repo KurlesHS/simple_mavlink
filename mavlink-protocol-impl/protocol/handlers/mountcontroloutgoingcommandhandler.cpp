@@ -32,7 +32,15 @@ IOutgoingCommand::Command MountControlOutgoingCommandHandler::commandType() cons
 
 bool MountControlOutgoingCommandHandler::processCommand(IOutgoingCommandSharedPtr command, const uint8_t systemId, const uint8_t componentId, const uint8_t targetSystemId, const uint8_t targetComponentId, MavLinkClient *mavlinkClient)
 {
-    if (mCurrentCmd) {
+    auto mountControlCommand = qSharedPointerObjectCast<MountControlOutgoingCommand>(command);
+    if (!mountControlCommand) {
+        logMessage(tr("Получили команду управления подвесом: внутренняя проблема (ошибка приведения типа), отмена"));
+        return false;
+    }
+    mLastPitch = mountControlCommand->pitch();
+    mLastCourse = mountControlCommand->pitch();
+
+    if (mCurrentCmd) {        
         if (command) {
             QTimer::singleShot(10, command.data(), [command]() {
                command->makeFinished(false);
@@ -47,11 +55,9 @@ bool MountControlOutgoingCommandHandler::processCommand(IOutgoingCommandSharedPt
         return false;
     }
 
-    auto mountControlCommand = qSharedPointerObjectCast<MountControlOutgoingCommand>(command);
-    if (!mountControlCommand) {
-        logMessage(tr("Получили команду управления подвесом: внутренняя проблема (ошибка приведения типа), отмена"));
-        return false;
-    }
+    mCurrentCourse = mLastCourse;
+    mCurrentPitch = mLastPitch;
+
     mClient = mavlinkClient;
     MavLinkCommandCreator commandCreator;
     commandCreator.setCommonParams(systemId, componentId, targetSystemId, targetComponentId);
@@ -77,7 +83,7 @@ bool MountControlOutgoingCommandHandler::incommingMavlinkCommand(const MavLinkCo
             mCommandTimeoutTimer.stop();
             qDebug() << Q_FUNC_INFO << cmd.result;
             if (cmd.result == MAV_RESULT_ACCEPTED) {
-                mCurrentCmd->makeFinished(true);
+                mCurrentCmd->makeFinished(true);                
             } else {
                 mCurrentCmd->makeFinished(false);
             }
