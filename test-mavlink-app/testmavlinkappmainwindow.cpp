@@ -136,16 +136,16 @@ void TestMavlinkAppMainWindow::updatePitchCourseLabel()
 
 void TestMavlinkAppMainWindow::correctPitchCourse()
 {
-    if (mCourse < 0) {
-        mCourse = 0;
-    } else if (mCourse > 360) {
-        mCourse = 360;
+    if (mCourse < -90) {
+        mCourse = -90;
+    } else if (mCourse > 90) {
+        mCourse = 90;
     }
 
-    if (mPitch < 0) {
-        mPitch = 0;
-    } else if (mPitch > 360) {
-        mPitch = 360;
+    if (mPitch < -90) {
+        mPitch = 90;
+    } else if (mPitch > 90) {
+        mPitch = 90;
     }
 }
 
