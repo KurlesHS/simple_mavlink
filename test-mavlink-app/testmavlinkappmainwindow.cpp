@@ -160,7 +160,7 @@ void TestMavlinkAppMainWindow::sendPitchCourseCmd()
     connect(cmd, &MountControlOutgoingCommand::finished,
             this, [this, p, c](bool result) {
         qDebug() << "result mount control" << result;
-        this->onLog(tr("Result mount control: %0").arg(result));
+        onLog(tr("Result mount control: %0").arg(result));
         if (result && (p != mPitch || c != mCourse)) {
             this->sendPitchCourseCmd();
         }
@@ -175,7 +175,7 @@ void TestMavlinkAppMainWindow::on_pushButtonStartMission_clicked()
     connect(cmd, &StartMissionOutgoingCommand::finished,
             this, [this](bool result) {
         qDebug() << "result start mission" << result;
-        this->onLog(tr("Result start mission: %0").arg(result));
+        onLog(tr("Result start mission: %0").arg(result));
     });
     mCommandHandler.addCommand("1", IOutgoingCommandSharedPtr(cmd));
 }

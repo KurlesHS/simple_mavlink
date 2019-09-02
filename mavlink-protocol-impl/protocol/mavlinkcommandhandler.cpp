@@ -1,6 +1,5 @@
 #include "mavlinkcommandhandler.h"
 
-
 #include <QPointer>
 #include <QVector>
 #include <QTimer>
@@ -59,6 +58,7 @@ IUavEventSharedPtr batteryStateHandler (const MavLinkCommandSharedPtr &command) 
     event->energyConsumed = msg.energy_consumed;
     event->temperature = msg.temperature;
     //event->voltages = msg.voltages;
+
     memcpy(event->voltages, msg.voltages, std::min(sizeof (event->voltages), sizeof (msg.voltages)));
     event->currentBattery = msg.current_battery;
     event->id = msg.id;
